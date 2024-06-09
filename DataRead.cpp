@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>  
 #include <fstream>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 using json = nlohmann::json;
@@ -11,6 +12,43 @@ using json = nlohmann::json;
 
 //std::string api_key = "https://yahoo-finance127.p.rapidapi.com/historic/tsla/1h/15d";
 
+struct StockData{
+
+    std::string timestamp;
+    double open;
+    double high;
+    double close;
+    double low;
+    double volume;
+
+};
+
+std::string dblToStr(double x){
+    std::string y = to_string(x);
+    return y;
+}
+
+//"Timestamp, Open, High, Low, Close, Volume"
+void printData(StockData data){
+    std::string output = data.timestamp + " | " + 
+    dblToStr(data.open) + " | " + 
+    dblToStr(data.high) + " | " + 
+    dblToStr(data.low) + " | " + 
+    dblToStr(data.close) + " | " + 
+    dblToStr(data.volume) + " | ";
+
+    std::cout << output << std::endl;
+    //printf("%s | %f | %f | %f | %f | %f", data.timestamp);
+}
+
+std::string convertUnixTimestamp(double timestamp) {
+    std::time_t t = static_cast<time_t>(timestamp);
+    char buffer[80];
+    struct tm* timeinfo;
+    timeinfo = gmtime(&t);  
+    strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);  
+    return std::string(buffer);
+}
 
 std::string defineStockParams(string ticker, string range, string granularity){
 
@@ -27,19 +65,18 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
     return size * nmemb;
 }
 
-std::vector<std::vector<double>> processHistoricData(string ticker, string range, string granularity)
-{
+std::vector<StockData> processHistoricData(string ticker, string range, string granularity){
     CURL* hnd;
     CURLcode ret;
     std::string readBuffer;
 
     string api_key = defineStockParams(ticker, range, granularity);
 
-    std::vector<std::vector<double>> stock_data;
+    std::vector<StockData> stock_data;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     hnd = curl_easy_init();
-    if(hnd) {
+    /*if(hnd) {
         curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
         curl_easy_setopt(hnd, CURLOPT_URL, api_key.c_str());
 
@@ -60,13 +97,6 @@ std::vector<std::vector<double>> processHistoricData(string ticker, string range
                 //prints raw json - ignore
                 //std::cout << "Parsed JSON: " << json_response.dump(4) << std::endl;
 
-                
-                std::vector<double> timestamps;
-                std::vector<double> opens;
-                std::vector<double> highs;
-                std::vector<double> lows;
-                std::vector<double> closes;
-                std::vector<double> volumes;
 
                 if (json_response.contains("timestamp") && json_response.contains("indicators") && json_response["indicators"].contains("quote")) {
                     auto json_timestamps = json_response["timestamp"];
@@ -79,21 +109,15 @@ std::vector<std::vector<double>> processHistoricData(string ticker, string range
                     auto json_volumes = quotes["volume"];
 
                     for (size_t i = 0; i < json_timestamps.size(); ++i) {
-                        timestamps.push_back(json_timestamps[i]);
-                        opens.push_back(json_opens[i]);
-                        highs.push_back(json_highs[i]);
-                        lows.push_back(json_lows[i]);
-                        closes.push_back(json_closes[i]);
-                        volumes.push_back(json_volumes[i]);
+                        StockData data;
+                        data.timestamp = convertUnixTimestamp(json_timestamps[i]);
+                        data.open = json_opens[i];
+                        data.close = json_closes[i];
+                        data.high = json_highs[i];
+                        data.low = json_lows[i];
+                        data.volume = json_volumes[i];
+                        stock_data.push_back(data);
                     }
-
-                    stock_data.push_back(timestamps);
-                    stock_data.push_back(opens);
-                    stock_data.push_back(highs);
-                    stock_data.push_back(lows);
-                    stock_data.push_back(closes);
-                    stock_data.push_back(volumes);
-
                     
                 } else {
                     std::cout << "Expected keys not found in JSON response." << std::endl;
@@ -108,21 +132,19 @@ std::vector<std::vector<double>> processHistoricData(string ticker, string range
     }
 
     curl_global_cleanup();
+    */
+
+   //makes fake data to avoid api usage
+    StockData data;
+    data.timestamp = "2024-05-17 13:30:00";
+    data.open =  173.750000;
+    data.close = 175.794693;
+    data.high = 175.899994;
+    data.low = 172.750000;
+    data.volume = 15893921.000000;
+    stock_data.push_back(data);
     return stock_data;
 }
 
 
-int main() {
 
-    std::vector<std::vector<double>> historic_data = processHistoricData("tsla", "15d", "1h");
-    std::cout << "Timestamp, Open, High, Low, Close, Volume" << std::endl;
-        for(size_t i = 0; i < (sizeof(historic_data[0])); i++){
-            std::cout << historic_data[0][i] << " | "
-                      << historic_data[1][i] << " | "
-                      << historic_data[2][i] << " | "
-                      << historic_data[3][i] << " | "
-                      << historic_data[4][i] << "\n";
-        }
-        std::cout << std::endl;
-    return 0;
-}
