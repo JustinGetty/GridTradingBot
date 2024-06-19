@@ -1,32 +1,26 @@
 #include <iostream>
-#include <string>
-#include <vector>
+#include <utility>
+#include "StockDataStruct.cpp"
 /*
 Strategy:
-when X percentage move in price on 5 day moving average and no significant increase/decrese to volume respectively, buy/sell
-TP 3/4 at 3% and 1/4 at 5%. SL at 1%
+Grid bot
 
-maintain 1 thread for running bot, other thread for calculations
+
 */
+class TradingStrategy{
 
-struct StockData{
+private:
 
-    std::string timestamp;
-    double open;
-    double high;
-    double close;
-    double low;
-    double volume;
+    double base_price;
+    double grid_size;
+    int num_of_grids;
+    double order_size;
+    std::vector<Order> buy_orders;
+    std::vector<Order> sell_orders;
+
+public:
+
+    TradingStrategy(double base_price, double grid_size, int num_of_grids, double order_size)
+
 
 };
-
-void trade(std::vector<StockData> dataStruct){
-
-    //structure window, slide, alert if moving average goes above X amount
-    //this will trigger place trade function
-    //store struct of open positions, another 2d vector
-    int start = 0;
-    int end = 4;
-
-
-}

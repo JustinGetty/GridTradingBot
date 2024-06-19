@@ -1,10 +1,9 @@
 #include <iostream>
-#include <string>
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>  
 #include <fstream>
-#include <vector>
 #include <ctime>
+#include "StockDataStruct.cpp"
 
 using namespace std;
 using json = nlohmann::json;
@@ -12,16 +11,6 @@ using json = nlohmann::json;
 
 //std::string api_key = "https://yahoo-finance127.p.rapidapi.com/historic/tsla/1h/15d";
 
-struct StockData{
-
-    std::string timestamp;
-    double open;
-    double high;
-    double close;
-    double low;
-    double volume;
-
-};
 
 std::string dblToStr(double x){
     std::string y = to_string(x);
@@ -76,7 +65,7 @@ std::vector<StockData> processHistoricData(string ticker, string range, string g
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     hnd = curl_easy_init();
-    /*if(hnd) {
+    if(hnd) {
         curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
         curl_easy_setopt(hnd, CURLOPT_URL, api_key.c_str());
 
@@ -132,8 +121,8 @@ std::vector<StockData> processHistoricData(string ticker, string range, string g
     }
 
     curl_global_cleanup();
-    */
-
+    return stock_data;
+/*
    //makes fake data to avoid api usage
     StockData data;
     data.timestamp = "2024-05-17 13:30:00";
@@ -144,6 +133,7 @@ std::vector<StockData> processHistoricData(string ticker, string range, string g
     data.volume = 15893921.000000;
     stock_data.push_back(data);
     return stock_data;
+    */
 }
 
 

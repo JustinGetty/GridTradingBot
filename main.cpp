@@ -1,5 +1,4 @@
 #include "DataRead.cpp"
-#include <vector>
 
 
 
@@ -9,7 +8,7 @@ int main() {
 	std::cout << std::endl;
     std::cout << "Timestamp            Open         High         Low          Close        Volume" << std::endl;
 		
-        for(size_t i = 0; i < 1; i++){
+        for(size_t i = 0; i < 50; i++){
             printData(historic_data[i]);
         }
 		
