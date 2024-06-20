@@ -1,5 +1,6 @@
-#include "DataRead.cpp"
-
+#include "DataRead.h"
+#include "StockDataStruct.h"
+#include <iostream>
 
 
 int main() {

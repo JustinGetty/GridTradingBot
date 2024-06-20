@@ -3,7 +3,8 @@
 #include <nlohmann/json.hpp>  
 #include <fstream>
 #include <ctime>
-#include "StockDataStruct.cpp"
+#include "StockDataStruct.h"
+#include <string>
 
 using namespace std;
 using json = nlohmann::json;
@@ -19,14 +20,16 @@ std::string dblToStr(double x){
 
 //"Timestamp, Open, High, Low, Close, Volume"
 void printData(StockData data){
-    std::string output = data.timestamp + " | " + 
-    dblToStr(data.open) + " | " + 
-    dblToStr(data.high) + " | " + 
-    dblToStr(data.low) + " | " + 
-    dblToStr(data.close) + " | " + 
-    dblToStr(data.volume) + " | ";
+    //std::string output = 
+    
 
-    std::cout << output << std::endl;
+    std::cout << data.timestamp << " | " << 
+    dblToStr(data.open) << " | " << 
+    dblToStr(data.high) << " | " << 
+    dblToStr(data.low) << " | " << 
+    dblToStr(data.close) << " | " << 
+    dblToStr(data.volume) << " | " << std::endl;
+
     //printf("%s | %f | %f | %f | %f | %f", data.timestamp);
 }
 
