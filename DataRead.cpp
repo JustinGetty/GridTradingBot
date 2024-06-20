@@ -18,17 +18,27 @@ std::string dblToStr(double x){
     return y;
 }
 
+std::string fixLngthDbl(std::string x){
+    std::string temp;
+    double y;
+    for(size_t i = 0; i < 12; i++){
+        temp.push_back(x[i]);
+    }
+    return temp;
+
+}
+
 //"Timestamp, Open, High, Low, Close, Volume"
 void printData(StockData data){
     //std::string output = 
     
 
-    std::cout << data.timestamp << " | " << 
+    std::cout << "|" << data.timestamp << " | " << 
     dblToStr(data.open) << " | " << 
-    dblToStr(data.high) << " | " << 
+    dblToStr(data.high) << " | " <<     
     dblToStr(data.low) << " | " << 
     dblToStr(data.close) << " | " << 
-    dblToStr(data.volume) << " | " << std::endl;
+    fixLngthDbl(dblToStr(data.volume)) << " | " << std::endl;
 
     //printf("%s | %f | %f | %f | %f | %f", data.timestamp);
 }
