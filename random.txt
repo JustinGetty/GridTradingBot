@@ -28,3 +28,15 @@ public:
     };
 
 };
+
+-------------
+    levels.lvl_one_pos = 1.008 * base_price;
+    levels.lvl_two_pos = 1.016 * base_price;
+    levels.lvl_three_pos = 1.024 * base_price;
+    levels.lvl_four_pos = 1.032 * base_price;
+
+    levels.lvl_one_neg = 0.092 * base_price;
+    levels.lvl_two_neg = 0.084 * base_price;
+    levels.lvl_three_neg = 1.076 * base_price;
+    levels.lvl_four_neg = 1.068 * base_price;
+    -----------

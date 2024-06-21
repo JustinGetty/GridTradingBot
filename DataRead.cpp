@@ -11,7 +11,7 @@ using json = nlohmann::json;
 
 
 //std::string api_key = "https://yahoo-finance127.p.rapidapi.com/historic/tsla/1h/15d";
-
+//https://twelve-data1.p.rapidapi.com/time_series?outputsize=30&symbol=AMZN&interval=1day&format=json
 
 std::string dblToStr(double x){
     std::string y = to_string(x);
@@ -54,9 +54,9 @@ std::string convertUnixTimestamp(double timestamp) {
 
 std::string defineStockParams(string ticker, string range, string granularity){
 
-    std::string requestStr = "https://yahoo-finance127.p.rapidapi.com/historic/";
+    std::string requestStr = "https://twelve-data1.p.rapidapi.com/time_series?outputsize=";
 
-    std::string combined = requestStr + ticker + "/" + granularity + "/" + range;
+    std::string combined = requestStr + range + "&symbol=" + ticker + "&interval=" + granularity + "&format=json";
     return combined;
 
 }
@@ -84,7 +84,7 @@ std::vector<StockData> processHistoricData(string ticker, string range, string g
 
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "x-rapidapi-key: b5a656e741mshf96723c09bf1ce5p1506c7jsn4183363ab252");
-        headers = curl_slist_append(headers, "x-rapidapi-host: yahoo-finance127.p.rapidapi.com");
+        headers = curl_slist_append(headers, "x-rapidapi-host: twelve-data1.p.rapidapi.com");
         curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
 
         curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -97,27 +97,20 @@ std::vector<StockData> processHistoricData(string ticker, string range, string g
             try {
                 auto json_response = json::parse(readBuffer);
                 //prints raw json - ignore
-                //std::cout << "Parsed JSON: " << json_response.dump(4) << std::endl;
+                std::cout << "Parsed JSON: " << json_response.dump(4) << std::endl;
 
 
-                if (json_response.contains("timestamp") && json_response.contains("indicators") && json_response["indicators"].contains("quote")) {
-                    auto json_timestamps = json_response["timestamp"];
-                    auto quotes = json_response["indicators"]["quote"][0];
+                if (json_response.contains("values")) {
+                    auto quotes = json_response["values"];
 
-                    auto json_opens = quotes["open"];
-                    auto json_highs = quotes["high"];
-                    auto json_lows = quotes["low"];
-                    auto json_closes = quotes["close"];
-                    auto json_volumes = quotes["volume"];
-
-                    for (size_t i = 0; i < json_timestamps.size(); ++i) {
+                    for (const auto& quote : quotes) {
                         StockData data;
-                        data.timestamp = convertUnixTimestamp(json_timestamps[i]);
-                        data.open = json_opens[i];
-                        data.close = json_closes[i];
-                        data.high = json_highs[i];
-                        data.low = json_lows[i];
-                        data.volume = json_volumes[i];
+                        data.timestamp = quote["datetime"].get<std::string>();
+                        data.open = std::stod(quote["open"].get<std::string>());
+                        data.high = std::stod(quote["high"].get<std::string>());
+                        data.low = std::stod(quote["low"].get<std::string>());
+                        data.close = std::stod(quote["close"].get<std::string>());
+                        data.volume = std::stod(quote["volume"].get<std::string>());
                         stock_data.push_back(data);
                     }
                     
@@ -147,6 +140,18 @@ std::vector<StockData> processHistoricData(string ticker, string range, string g
     stock_data.push_back(data);
     return stock_data;
     */
+}
+
+void printDataFrame(std::vector<StockData> data_frame){
+    std::cout << " Timestamp            Open         High         Low          Close        Volume" << std::endl;
+	std::cout << "-----------------------------------------------------------------------------------------" << std::endl;	
+        for(size_t i = 0; i < data_frame.size(); i++){
+            printData(data_frame[i]);
+        }
+		
+        std::cout << std::endl;
+
+
 }
 
 

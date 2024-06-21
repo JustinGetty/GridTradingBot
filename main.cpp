@@ -1,20 +1,22 @@
 #include "DataRead.h"
 #include "StockDataStruct.h"
 #include <iostream>
+#include "Trade.h"
 
 //g++ -o trading_bot main.cpp Trading.cpp DataRead.cpp -std=c++11 -lcurl
 
 int main() {
-
-    std::vector<StockData> historic_data = processHistoricData("tsla", "15d", "1h");
+    //1min, 5min, 15min, 30min, 45min, 1h, 2h, 4h, 1day, 1week, 1month
+    std::vector<StockData> historic_data = processHistoricData("tsla", "25", "1day");
 	std::cout << std::endl;
-    std::cout << " Timestamp            Open         High         Low          Close        Volume" << std::endl;
-	std::cout << "-----------------------------------------------------------------------------------------" << std::endl;	
-        for(size_t i = 0; i < 49; i++){
-            printData(historic_data[i]);
-        }
-		
-        std::cout << std::endl;
+    printDataFrame(historic_data);
+    StockData origin_candle = historic_data[0];
+
+    Levels levels = setLevels(origin_candle.open);
+
+    visualizeLevels(lvlsToVctr(levels));
+    Trade(historic_data, levels);
+    
     return 0;
 }
 

@@ -19,4 +19,17 @@ struct Order {
     std::string type;
 };
 
+struct Levels {
+
+    double lvl_one_pos;
+    double lvl_two_pos;
+    double lvl_three_pos;
+    double lvl_four_pos;
+    double lvl_one_neg;
+    double lvl_two_neg;
+    double lvl_three_neg;
+    double lvl_four_neg;
+
+};
+
 #endif // STOCKDATASTRUCT_H
